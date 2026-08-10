@@ -1,0 +1,1075 @@
+/* =========================================================
+   Legalizáljuk - landing page stílusok
+   Design-elv: fehér alap, sötét szöveg, EGY kiemelő szín
+   (sötét teal), nagy kontrasztok, 50+ / gyengénlátó
+   látogatóknak is jól olvasható méretek.
+   ========================================================= */
+
+:root{
+  --ink:        #13161C;
+  --ink-soft:   #3A3F49;
+  --teal:       #1E5E68;
+  --teal-dark:  #163F47;
+  --cyan:       #17ABC0;
+  --white:      #FFFFFF;
+  --bg-soft:    #F4F8F8;
+  --border:     #E1E7E7;
+  --red:        #E63946;
+  --black:      #0B0C0E;
+  --radius:     14px;
+  --max-w:      1100px;
+  --shadow:     0 10px 30px rgba(19,22,28,0.10);
+}
+
+*, *::before, *::after{ box-sizing: border-box; }
+
+html{ scroll-behavior: smooth; }
+
+body{
+  margin: 0;
+  font-family: "Inter", "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+  color: var(--ink);
+  background: var(--white);
+  font-size: 18px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3{
+  font-family: "Poppins", "Inter", system-ui, sans-serif;
+  font-weight: 700;
+  line-height: 1.15;
+  margin: 0 0 0.5em 0;
+  color: var(--ink);
+}
+
+p{ margin: 0 0 1em 0; }
+
+a{ color: var(--teal); }
+
+img{ max-width: 100%; display: block; }
+
+.wrap{
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.section{
+  padding: 64px 0;
+}
+
+.section-tight{ padding: 40px 0; }
+
+.section-alt{
+  background: var(--bg-soft);
+}
+
+.eyebrow{
+  display: inline-block;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 15px;
+  color: var(--teal);
+  margin-bottom: 12px;
+}
+
+.center{ text-align: center; }
+
+/* ---------- Gombok ---------- */
+.btn{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
+  font-size: 19px;
+  text-decoration: none;
+  border: none;
+  border-radius: 999px;
+  padding: 18px 34px;
+  cursor: pointer;
+  transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+  min-height: 56px;
+}
+.btn:hover{ transform: translateY(-1px); opacity: 0.95; }
+.btn:active{ transform: translateY(0); }
+
+.btn-primary{
+  background: var(--teal);
+  color: var(--white);
+  box-shadow: 0 8px 20px rgba(30,94,104,0.30);
+}
+.btn-cyan{
+  background: var(--cyan);
+  color: var(--ink);
+  box-shadow: 0 8px 20px rgba(23,171,192,0.30);
+}
+.btn-outline{
+  background: transparent;
+  color: var(--teal);
+  border: 2px solid var(--teal);
+}
+.btn-block{ width: 100%; }
+.btn-lg{ font-size: 21px; padding: 20px 30px; }
+.btn[hidden]{ display: none; }
+
+/* ---------- Konzultáció CTA - akciós visszaszámlálós gomb ---------- */
+.btn-timer{
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 13px;
+  padding-bottom: 13px;
+}
+.btn-timer .timer-row{
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+.btn-timer .orig-offer{
+  opacity: 0.8;
+}
+.btn-timer .orig-price{
+  display: inline-block;
+  font-size: 15px;
+  font-weight: 800;
+  text-decoration: line-through;
+  text-decoration-color: var(--red);
+  text-decoration-thickness: 2px;
+  margin-left: 3px;
+}
+.btn-timer .free-badge{
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--red);
+  color: var(--white);
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  padding: 4px 11px;
+  border-radius: 999px;
+  box-shadow: 0 2px 8px rgba(230,57,70,0.45);
+}
+.btn-timer .free-badge .consult-timer-value{
+  font-variant-numeric: tabular-nums;
+  font-size: 15px;
+  font-weight: 900;
+}
+.btn-timer .timer-main{
+  font-family: "Poppins", sans-serif;
+}
+.btn-timer .timer-main .word-ingyenes{
+  font-size: 1.18em;
+  font-weight: 900;
+}
+/* "lezárt" (24 órás) állapot - nincs ár, helyette piros sürgetés hívja fel a figyelmet */
+.btn-timer.is-locked .urgent-badge{
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--red);
+  color: var(--white);
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  padding: 4px 12px;
+  border-radius: 999px;
+  box-shadow: 0 2px 8px rgba(230,57,70,0.45);
+}
+.urgent-dot{
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--white);
+  animation: legal-pulse-dot-white 1.6s infinite;
+}
+/* piros sürgető pötty a kompakt CTA-kon (fejléc-nav, mobil sticky sáv) */
+[data-consult-cta="compact"].is-locked{
+  color: var(--red);
+  font-weight: 800;
+}
+[data-consult-cta="compact"].is-locked .urgent-dot{
+  background: var(--red);
+  margin-right: 7px;
+  vertical-align: middle;
+  animation: legal-pulse-dot-red 1.6s infinite;
+}
+.btn[data-consult-cta="compact"].is-locked{
+  background: var(--red);
+  border-color: var(--red);
+  color: var(--white);
+}
+.btn[data-consult-cta="compact"].is-locked .urgent-dot{ background: var(--white); }
+.text-urgent{ color: var(--red); font-weight: 800; }
+@keyframes legal-pulse-dot-white{
+  0%{ box-shadow: 0 0 0 0 rgba(255,255,255,0.7); }
+  70%{ box-shadow: 0 0 0 6px rgba(255,255,255,0); }
+  100%{ box-shadow: 0 0 0 0 rgba(255,255,255,0); }
+}
+@keyframes legal-pulse-dot-red{
+  0%{ box-shadow: 0 0 0 0 rgba(230,57,70,0.6); }
+  70%{ box-shadow: 0 0 0 6px rgba(230,57,70,0); }
+  100%{ box-shadow: 0 0 0 0 rgba(230,57,70,0); }
+}
+
+/* ---------- Fejléc (sötét, ugyanaz mint a hero) ---------- */
+.site-header{
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--ink);
+  border-bottom: 1px solid #262B34;
+}
+.site-header .wrap{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 14px;
+  padding-bottom: 14px;
+  gap: 16px;
+}
+.site-nav{
+  display: flex;
+  gap: 28px;
+}
+.site-nav a{
+  font-weight: 600;
+  font-size: 16px;
+  color: #D9DEE3;
+  text-decoration: none;
+}
+.site-nav a:hover{ color: var(--cyan); }
+.site-nav a.active{ color: var(--cyan); }
+@media (max-width: 680px){
+  .site-nav{ display: none; }
+}
+.logo{
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+  text-decoration: none;
+}
+.logo-word{
+  font-family: "Poppins", sans-serif;
+  font-weight: 800;
+  font-size: 24px;
+  color: var(--cyan);
+  letter-spacing: 0.01em;
+}
+.logo-sub{
+  font-size: 13px;
+  color: #9AA3AC;
+  font-weight: 500;
+}
+.header-phone{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-decoration: none;
+  color: var(--white);
+}
+.header-phone .label{
+  font-size: 13px;
+  color: #9AA3AC;
+  font-weight: 600;
+}
+.header-phone .num{
+  font-family: "Poppins", sans-serif;
+  font-weight: 800;
+  font-size: 20px;
+  color: var(--white);
+  white-space: nowrap;
+}
+.header-phone:hover .num{ color: var(--cyan); }
+
+/* ---------- HERO (sötét) ---------- */
+.hero{
+  padding: 80px 0 64px 0;
+  text-align: center;
+}
+.hero-dark{
+  background: var(--ink);
+  color: var(--white);
+}
+.hero-dark h1{
+  color: var(--white);
+  font-size: clamp(32px, 5.4vw, 50px);
+  max-width: 820px;
+  margin: 0 auto 18px auto;
+}
+.hero-dark .hero-sub{
+  font-size: clamp(19px, 2.6vw, 24px);
+  font-weight: 500;
+  font-family: "Inter", sans-serif;
+  color: #D9DEE3;
+  max-width: 680px;
+  margin: 0 auto 40px auto;
+  line-height: 1.5;
+}
+.hero-flag-badge{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #D9DEE3;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 8px 18px;
+  border-radius: 999px;
+  margin-bottom: 22px;
+}
+.hero-ctas{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+.hero-contact{
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-decoration: none;
+}
+.hero-contact .label{
+  font-size: 14px;
+  font-weight: 700;
+  color: #9AA3AC;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.hero-contact .hero-phone{
+  font-family: "Poppins", sans-serif;
+  font-weight: 800;
+  font-size: 26px;
+  color: var(--white);
+}
+.hero-contact-extra{
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 4px;
+}
+.hero-contact-extra a{
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #D9DEE3;
+  font-weight: 600;
+  font-size: 15px;
+  text-decoration: none;
+}
+.hero-contact-extra a:hover{ color: var(--cyan); }
+.hero-contact-extra svg{ width: 19px; height: 19px; flex-shrink: 0; }
+
+/* ---------- VISSZASZÁMLÁLÓ ---------- */
+.countdown-panel{
+  background: var(--black);
+  color: var(--white);
+  padding: 48px 0;
+}
+.countdown-title{
+  max-width: 760px;
+  margin: 0 auto 28px auto;
+  text-align: center;
+  font-size: clamp(17px, 2.4vw, 21px);
+  font-weight: 600;
+  color: #E7E7E7;
+  font-family: "Inter", sans-serif;
+}
+.countdown-grid{
+  display: flex;
+  justify-content: center;
+  gap: clamp(10px, 3vw, 28px);
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+.countdown-unit{
+  text-align: center;
+  min-width: 78px;
+}
+.countdown-unit .num{
+  font-family: "Poppins", sans-serif;
+  font-weight: 800;
+  font-size: clamp(38px, 8vw, 64px);
+  color: var(--red);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.countdown-unit .lbl{
+  margin-top: 6px;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #B9B9B9;
+  font-weight: 700;
+}
+.countdown-note{
+  max-width: 680px;
+  margin: 0 auto;
+  text-align: center;
+  color: var(--white);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* ---------- E-KÖNYV ---------- */
+.ebook-section .wrap{
+  display: grid;
+  grid-template-columns: minmax(300px, 460px) 1fr;
+  gap: 48px;
+  align-items: center;
+}
+.ebook-cover-wrap{
+  justify-self: center;
+}
+.ebook-cover-wrap img{
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  transform: rotate(-2deg);
+}
+.ebook-copy h2{ font-size: clamp(24px,3vw,30px); }
+.ebook-copy .sub{
+  font-size: 17px;
+  color: var(--ink-soft);
+  margin-bottom: 26px;
+}
+
+/* ---------- BEMUTATKOZÁS ---------- */
+.bio-section .wrap{
+  display: grid;
+  grid-template-columns: minmax(200px, 300px) 1fr;
+  gap: 48px;
+  align-items: center;
+}
+.bio-photo img{
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  aspect-ratio: 4/5;
+  object-fit: cover;
+  width: 100%;
+}
+.bio-copy h2{ font-size: clamp(26px,3.6vw,34px); }
+.bio-name{
+  font-family: "Poppins", sans-serif;
+  font-weight: 800;
+  font-size: 24px;
+  margin-top: 4px;
+}
+.bio-title{
+  color: var(--teal);
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+.bio-quote{
+  margin-top: 18px;
+  padding-left: 18px;
+  border-left: 4px solid var(--cyan);
+  font-style: italic;
+  color: var(--ink-soft);
+  font-size: 19px;
+}
+
+/* ---------- PROBLÉMA lista ---------- */
+.problem-list{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin-top: 36px;
+}
+.problem-card{
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px;
+}
+.problem-card img{
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+}
+.problem-card p{
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* ---------- MEGOLDÁS ---------- */
+.solution-list{
+  list-style: none;
+  margin: 24px 0 32px 0;
+  padding: 0;
+  max-width: 720px;
+}
+.solution-list li{
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  font-size: 19px;
+  font-weight: 600;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.solution-list li:last-child{ border-bottom: none; }
+.solution-list .tick{
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--teal);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 800;
+  margin-top: 2px;
+}
+
+/* ---------- HOGYAN MŰKÖDIK ---------- */
+.steps{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  margin-top: 36px;
+}
+.steps-4{ grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 900px){
+  .steps-4{ grid-template-columns: repeat(2, 1fr); }
+}
+.step{
+  text-align: center;
+  padding: 8px;
+}
+.step .step-num{
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--teal);
+  color: var(--white);
+  font-family: "Poppins", sans-serif;
+  font-weight: 800;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px auto;
+}
+.step p{ font-size: 18px; font-weight: 600; color: var(--ink); }
+
+/* ---------- Teljes folyamat - függőleges flow-diagram, nyilakkal ---------- */
+.flow{
+  list-style: none;
+  margin: 36px 0 0 0;
+  padding: 0;
+  max-width: 760px;
+}
+.flow-step{
+  position: relative;
+  display: flex;
+  gap: 22px;
+  padding-bottom: 34px;
+}
+.flow-step:last-child{ padding-bottom: 0; }
+.flow-num{
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--teal);
+  color: var(--white);
+  font-family: "Poppins", sans-serif;
+  font-weight: 800;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.flow-step:not(:last-child)::before{
+  content: "";
+  position: absolute;
+  left: 23px;
+  top: 48px;
+  bottom: -6px;
+  width: 2px;
+  background: var(--border);
+}
+.flow-step:not(:last-child)::after{
+  content: "▾";
+  position: absolute;
+  left: 15px;
+  bottom: 2px;
+  width: 18px;
+  height: 18px;
+  line-height: 18px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--teal);
+  background: var(--white);
+}
+.flow-body{ padding-top: 6px; }
+.flow-title{
+  font-family: "Poppins", sans-serif;
+  font-weight: 800;
+  font-size: 19px;
+  color: var(--ink);
+  margin: 0 0 4px 0;
+}
+.flow-body p:not(.flow-title){
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 16px;
+  line-height: 1.55;
+}
+@media (max-width: 560px){
+  .flow-step{ gap: 16px; padding-bottom: 26px; }
+  .flow-num{ width: 40px; height: 40px; font-size: 17px; }
+  .flow-step:not(:last-child)::before{ left: 19px; top: 40px; }
+  .flow-step:not(:last-child)::after{ left: 11px; }
+}
+
+/* ---------- CTA doboz ismétlés ---------- */
+.cta-repeat{
+  text-align: center;
+  margin-top: 40px;
+}
+
+/* ---------- CTA gombsor (két gomb mindig egymás mellett) ---------- */
+.cta-row{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+}
+.cta-row-center{ justify-content: center; }
+
+/* ---------- FORM (3 lépéses sötét kvíz-kártya) ---------- */
+.form-section-dark{
+  background: var(--ink);
+}
+.wizard-card{
+  max-width: 720px;
+  margin: 0 auto;
+  background: #1E222A;
+  border-radius: var(--radius);
+  padding: 40px 36px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+}
+
+/* ---------- Könyv-igénylés felugró ablak (modal) ---------- */
+.modal-overlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(11,12,14,0.75);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 20px;
+  z-index: 200;
+  overflow-y: auto;
+}
+.modal-overlay[hidden]{ display: none; }
+.modal-card{
+  position: relative;
+  width: 100%;
+  margin: auto;
+}
+.modal-close{
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #262B34;
+  border: 2px solid #3A414C;
+  color: var(--white);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color .15s ease, background .15s ease;
+}
+.modal-close:hover{ border-color: var(--cyan); background: #3A414C; }
+body.modal-open{ overflow: hidden; }
+@media (max-width: 560px){
+  .modal-overlay{ padding: 20px 12px; }
+  .modal-card{ padding: 32px 20px; }
+}
+.form-section-dark .wizard-title{
+  color: var(--white);
+  text-align: center;
+  font-size: clamp(24px, 3.2vw, 32px);
+}
+.form-section-dark .wizard-sub{
+  text-align: center;
+  color: #AEB4BC;
+  max-width: 520px;
+  margin: 0 auto 28px auto;
+  font-size: 17px;
+}
+.wizard-chips{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+.wizard-chips:not(:empty){ margin-bottom: 24px; }
+.chip{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(23,171,192,0.15);
+  border: 1px solid var(--cyan);
+  color: var(--cyan);
+  font-size: 14px;
+  font-weight: 700;
+  padding: 8px 8px 8px 14px;
+  border-radius: 999px;
+}
+.chip button{
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  padding: 2px;
+}
+.form-section-dark .wizard-label{
+  color: var(--white);
+  font-weight: 700;
+  font-size: 18px;
+  margin: 0 0 16px 0;
+}
+.option-grid{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.option-btn{
+  background: #262B34;
+  border: 2px solid #3A414C;
+  color: var(--white);
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  border-radius: 10px;
+  padding: 16px 14px;
+  cursor: pointer;
+  text-align: center;
+  transition: border-color .15s ease, background .15s ease;
+  min-height: 56px;
+}
+.option-btn:hover{ border-color: var(--cyan); }
+.option-btn.selected{
+  background: rgba(23,171,192,0.18);
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+.option-btn-warning{
+  grid-column: 1 / -1;
+  text-align: left;
+  border-color: #7A2E2E;
+  color: #FF9C9C;
+}
+.option-btn-warning:hover{ border-color: var(--red); }
+.option-btn-warning.selected{
+  background: rgba(230,57,70,0.15);
+  border-color: var(--red);
+  color: #FFB4B4;
+}
+.form-section-dark .field label{ color: var(--white); }
+.form-section-dark .field input[type="text"],
+.form-section-dark .field input[type="tel"],
+.form-section-dark .field input[type="email"],
+.form-section-dark .field textarea{
+  background: #262B34;
+  border: 2px solid #3A414C;
+  color: var(--white);
+}
+.form-section-dark .field input[type="text"]::placeholder,
+.form-section-dark .field input[type="tel"]::placeholder,
+.form-section-dark .field input[type="email"]::placeholder,
+.form-section-dark .field textarea::placeholder{ color: #8B929B; }
+.form-section-dark .field input:focus,
+.form-section-dark .field textarea:focus{ border-color: var(--cyan); }
+.form-section-dark .field textarea{ resize: vertical; font-family: inherit; }
+.form-section-dark .field textarea.textarea-lg{ min-height: 130px; }
+.form-section-dark .checkbox-field label{ color: #C3C8CE; }
+.form-section-dark .checkbox-field.required label b{ color: var(--white); }
+.form-section-dark .checkbox-field a{ color: var(--cyan); }
+.field-row{ display: flex; gap: 16px; }
+.field-row .field{ flex: 1; min-width: 0; }
+.form-section-dark .field-hint{
+  font-size: 14px;
+  color: #8B929B;
+  margin: -10px 0 20px 0;
+}
+.wizard-skip{ text-align: center; margin-top: 18px; }
+.wizard-skip a{
+  color: #9AA3AC;
+  font-size: 14px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.wizard-skip a:hover{ color: var(--cyan); }
+.wizard-nav{
+  display: flex;
+  gap: 14px;
+  margin-top: 8px;
+}
+.btn-outline-dark{
+  background: transparent;
+  border: 2px solid #3A414C;
+  color: var(--white);
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 16px 24px;
+  cursor: pointer;
+  font-size: 17px;
+}
+.btn-outline-dark:hover{ border-color: var(--cyan); }
+.form-section-dark .form-microcopy{ color: #8B929B; }
+
+.field{ margin-bottom: 18px; }
+.field label{
+  display: block;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 6px;
+  font-size: 16px;
+}
+.field input[type="text"],
+.field input[type="tel"],
+.field input[type="email"],
+.field textarea{
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 18px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  font-family: inherit;
+  color: var(--ink);
+}
+.field textarea{ resize: vertical; }
+.field input:focus,
+.field textarea:focus{
+  outline: none;
+  border-color: var(--teal);
+}
+.checkbox-field{
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+.checkbox-field input{
+  width: 22px;
+  height: 22px;
+  margin-top: 3px;
+  flex-shrink: 0;
+  accent-color: var(--teal);
+}
+.checkbox-field label{
+  font-size: 15px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+.checkbox-field.required label b{ color: var(--ink); }
+.form-microcopy{
+  text-align: center;
+  font-size: 14px;
+  color: var(--ink-soft);
+  margin-top: 14px;
+}
+.form-error{
+  display: none;
+  background: #FCE9E9;
+  color: #A32323;
+  border: 1px solid #F1B9B9;
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 15px;
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+.form-error.show{ display: block; }
+
+/* ---------- GYIK ---------- */
+.faq-item{
+  border-bottom: 1px solid var(--border);
+  padding: 20px 0;
+}
+.faq-item:first-child{ border-top: 1px solid var(--border); }
+.faq-q{
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
+  font-size: 19px;
+  margin-bottom: 8px;
+  color: var(--teal);
+}
+.faq-a{ color: var(--ink-soft); margin: 0; }
+
+/* ---------- Footer ---------- */
+.site-footer{
+  background: var(--ink);
+  color: #C9CDD3;
+  padding: 40px 0;
+  font-size: 15px;
+}
+.site-footer .wrap{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+}
+.site-footer a{ color: #C9CDD3; }
+.site-footer .footer-links a{ margin-left: 18px; }
+.site-footer .footer-links a:first-child{ margin-left: 0; }
+
+/* ---------- Köszönő oldal ---------- */
+.thanks-hero{
+  text-align: center;
+  padding: 80px 0 40px 0;
+}
+.check-badge{
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: var(--teal);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 28px auto;
+}
+.thanks-hero h1{ font-size: clamp(30px,5vw,44px); }
+.thanks-hero .lead{
+  max-width: 560px;
+  margin: 0 auto;
+  font-size: 20px;
+  color: var(--ink-soft);
+}
+.thanks-cta{
+  max-width: 560px;
+  margin: 40px auto 0 auto;
+  background: var(--teal);
+  color: var(--white);
+  border-radius: var(--radius);
+  padding: 36px;
+  text-align: center;
+}
+.thanks-cta h2{ color: var(--white); font-size: 24px; }
+.thanks-cta .tel-btn{
+  margin-top: 16px;
+}
+.thanks-cta .alt{
+  margin-top: 16px;
+  font-size: 15px;
+  color: #DCEEF0;
+}
+.thanks-trust{
+  text-align: center;
+  max-width: 520px;
+  margin: 28px auto 0 auto;
+  color: var(--ink-soft);
+  font-size: 16px;
+}
+
+/* ---------- Mobil sticky CTA sáv ---------- */
+/* Csak mobilon (≤680px) jelenik meg, mindig elérhető marad görgetés
+   közben is, hogy a látogató bárhonnan egy koppintással eljusson
+   valamelyik űrlaphoz. */
+.mobile-sticky-cta{
+  display: none;
+}
+@media (max-width: 680px){
+  .mobile-sticky-cta{
+    display: flex;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 60;
+    background: var(--ink);
+    border-top: 1px solid #262B34;
+    box-shadow: 0 -6px 20px rgba(0,0,0,0.35);
+    padding: 10px 10px calc(10px + env(safe-area-inset-bottom, 0px)) 10px;
+    gap: 8px;
+    transition: transform .2s ease;
+  }
+  .mobile-sticky-cta.is-hidden{
+    transform: translateY(100%);
+  }
+  .mobile-sticky-cta a.btn{
+    flex: 1;
+    min-height: 48px;
+    padding: 12px 10px;
+    font-size: 14px;
+    text-align: center;
+  }
+  body{ padding-bottom: 76px; }
+}
+
+/* ---------- Reszponzív ---------- */
+@media (max-width: 820px){
+  .ebook-section .wrap,
+  .bio-section .wrap{
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  .bio-copy .bio-quote{ text-align: left; }
+  .bio-section .cta-row,
+  .ebook-section .cta-row,
+  #feltetelek .cta-row{ justify-content: center; }
+  .problem-list{ grid-template-columns: 1fr; }
+  .steps{ grid-template-columns: 1fr; }
+  .section{ padding: 48px 0; }
+}
+
+@media (max-width: 560px){
+  body{ font-size: 17px; }
+  .btn{ font-size: 18px; padding: 16px 24px; }
+  .header-phone .num{ font-size: 17px; }
+  .countdown-grid{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    flex-wrap: unset;
+  }
+  .countdown-unit{ min-width: 0; }
+  .countdown-unit .num{ font-size: 30px; }
+  .countdown-unit .lbl{ font-size: 10.5px; letter-spacing: 0.02em; }
+  .wizard-card{ padding: 28px 20px; }
+  .option-grid{ grid-template-columns: 1fr; }
+  .wizard-nav{ flex-direction: column-reverse; }
+  .wizard-nav .btn{ width: 100%; }
+  .field-row{ flex-direction: column; gap: 0; }
+  .cta-row{ flex-direction: column; }
+  .cta-row .btn{ width: 100%; }
+}
