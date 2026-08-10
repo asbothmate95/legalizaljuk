@@ -6,10 +6,11 @@ A projekted Supabase fiókjában (asboth.mate@madspace.co.uk) az alábbiakat él
 
 - `leads` tábla + biztonsági (RLS) szabály létrehozva (`backend/supabase_schema.sql` lefuttatva)
 - `send-lead-email` Edge Function telepítve (`backend/supabase/functions/send-lead-email/index.ts` tartalmával)
-- mind a 4 titkos kulcs (`RESEND_API_KEY`, `NOTIFY_TO_EMAIL`, `RESEND_FROM_EMAIL`, `EBOOK_PDF_URL`) beállítva
+- mind a 4 titkos kulcs (`RESEND_API_KEY`, `NOTIFY_TO_EMAIL`, `RESEND_FROM_EMAIL`, `EBOOK_DRIVE_URL`) beállítva
 - a `script.js` fájl a csomagban MÁR a te valós Supabase URL-eddel és publikus kulcsoddal van feltöltve — nincs több teendő ezen a téren
-- **az e-könyv PDF-je fel van töltve** a Supabase Storage `assets` (publikus) bucket-jébe, és be van kötve az `EBOOK_PDF_URL` secretbe — mostantól a kimenő e-mailek automatikusan csatolják
-- a teljes láncot (űrlap → adatbázis → automatikus e-mail, PDF-csatolmánnyal együtt) tesztadatokkal kétszer is ellenőriztem, mindkétszer sikeresen működött (`{"ok":true,"sent":2}`, HTTP 200), a teszt-sorokat utána töröltem az adatbázisból
+- **az e-könyv NEM csatolmányként, hanem egy Google Drive megosztási linkként** kerül ki a kimenő e-mailekben — a link az `EBOOK_DRIVE_URL` secretben van beállítva
+- minden kimenő e-mail (a látogatóknak és a belső értesítés is) egységes HTML aláírással záródik (Ing. arch. Asbóth Máté elérhetőségei)
+- a teljes láncot (űrlap → adatbázis → automatikus e-mail, Drive-linkkel) tesztadatokkal ellenőriztem
 
 **Ami még hátravan, mielőtt élesben, valódi ügyfeleknek is helyesen menjenek ki a levelek:**
 
@@ -65,24 +66,27 @@ lépi túl a weboldal.
    ideiglenesen a Resend saját `onboarding@resend.dev` feladó-címét
    használhatod teszteléshez.
 
-## 4. lépés — az e-könyv PDF feltöltése
+## 4. lépés — az e-könyv Google Drive linkjének beállítása
 
-> ✅ A te `LEGALIZALJUK` projektedben ez már megtörtént: az `assets` publikus
-> bucket létrejött, a `legalizaljuk-ekonyv.pdf` fel van töltve, és az
-> `EBOOK_PDF_URL` secret be van állítva a publikus URL-jére
-> (`https://vrhrzlvhyxrkxxcjxmaf.supabase.co/storage/v1/object/public/assets/legalizaljuk-ekonyv.pdf`).
-> Ez a lépés csak akkor kell, ha egy másik/új Supabase projektet állítasz be.
+> ✅ A te `LEGALIZALJUK` projektedben ez már megtörtént: az `EBOOK_DRIVE_URL`
+> secret be van állítva a Google Drive megosztási linkre
+> (`https://drive.google.com/file/d/1gZ2rA_q4fLQvJK9K2M188ptDW3J8CuhT/view?usp=sharing`).
+> Ez a lépés csak akkor kell, ha egy másik/új e-könyv linket akarsz beállítani.
 
-1. Supabase Dashboard → **Storage** → hozz létre egy **`assets`** nevű,
-   **publikus (public)** bucket-et.
-2. Töltsd fel bele a végleges e-könyv PDF-et (pl. `legalizaljuk-ekonyv.pdf`
-   néven).
-3. Kattints a feltöltött fájlra, és másold ki a **publikus URL-jét** —
-   erre lesz szükség az 5. lépésben.
+Az e-könyvet NEM csatolmányként küldjük ki (hogy elkerüljük a spamszűrők
+gyanakvását nagy PDF-csatolmányoknál), hanem egy Google Drive linkként
+szerepel az e-mail szövegében.
 
-> Ha a PDF még nincs kész, ideiglenesen üresen hagyhatod ezt a lépést —
-> a rendszer akkor is elküldi a visszaigazoló e-maileket, csak a PDF
-> csatolmány nélkül, amíg meg nem adod az `EBOOK_PDF_URL`-t.
+1. Töltsd fel a végleges e-könyv PDF-et a Google Drive-ra.
+2. Kattints jobb gombbal a fájlra → **Megosztás** → állítsd "Bárki, aki
+   rendelkezik a linkkel" (Anyone with the link) jogosultságúra.
+3. Másold ki a megosztási linket (pl.
+   `https://drive.google.com/file/d/XXXXXXXX/view?usp=sharing`) — erre
+   lesz szükség az 5. lépésben.
+
+> Ha a link még nincs kész, ideiglenesen üresen hagyhatod ezt a lépést —
+> a rendszer egy alapértelmezett Drive-linket használ, amíg meg nem adod
+> az `EBOOK_DRIVE_URL`-t.
 
 ## 5. lépés — Edge Function telepítése (Supabase CLI)
 
@@ -100,7 +104,7 @@ supabase link --project-ref <PROJECT_REF>
 supabase secrets set RESEND_API_KEY=re_xxxxxxxxxxxx
 supabase secrets set NOTIFY_TO_EMAIL=hello@legalizaljuk.sk
 supabase secrets set RESEND_FROM_EMAIL="Legalizáljuk <hello@legalizaljuk.sk>"
-supabase secrets set EBOOK_PDF_URL=https://<PROJECT_REF>.supabase.co/storage/v1/object/public/assets/legalizaljuk-ekonyv.pdf
+supabase secrets set EBOOK_DRIVE_URL="https://drive.google.com/file/d/XXXXXXXX/view?usp=sharing"
 
 # a függvény feltöltése
 supabase functions deploy send-lead-email --no-verify-jwt

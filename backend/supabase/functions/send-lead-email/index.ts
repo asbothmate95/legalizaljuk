@@ -6,13 +6,15 @@
 //
 // Két e-mailt küld ki a Resend API-n keresztül (https://resend.com):
 //   1) A LÁTOGATÓNAK — ha megadott e-mail címet:
-//        - "book" típusnál: köszönő e-mail + az ingyenes e-könyv PDF
-//          csatolva
-//        - "consult" típusnál: visszaigazoló e-mail (a könyvet is
-//          csatolva, ha e-mailt is megadott)
+//        - "book" típusnál: köszönő e-mail + link az ingyenes e-könyv
+//          Google Drive-os PDF-jéhez
+//        - "consult" típusnál: visszaigazoló e-mail (a könyv linkjével)
 //   2) NEKED (a cég e-mail címére) — értesítés az új érdeklődőről,
 //      minden megadott adattal, hogy azonnal fel tudd venni vele a
 //      kapcsolatot telefonon.
+//
+// Minden kimenő e-mail végén egy egységes HTML aláírás szerepel
+// (Ing. arch. Asbóth Máté elérhetőségei, logó, közösségi linkek).
 //
 // SZÜKSÉGES BEÁLLÍTÁSOK (Supabase Dashboard → Edge Functions →
 // send-lead-email → Secrets, VAGY a Supabase CLI-vel):
@@ -28,11 +30,13 @@
 // használhatod ideiglenesen a Resend saját, előre hitelesített
 // "onboarding@resend.dev" feladó-címét.
 //
-// Az e-könyv PDF-jét egy publikus Supabase Storage bucket-be kell
-// feltölteni (lásd a repó gyökerében lévő SETUP-UTMUTATO.md-t), és az
-// EBOOK_PDF_URL secret-ben a publikus URL-jét kell megadni:
+// Az e-könyvet NEM csatolmányként küldjük, hanem egy Google Drive
+// megosztási linkként (a fájlnak "Anyone with the link" jogosultsággal
+// megoszthatónak kell lennie). A link az EBOOK_DRIVE_URL secret-ben
+// állítható be — ha nincs beállítva, egy alapértelmezett link kerül
+// felhasználásra:
 //
-//   supabase secrets set EBOOK_PDF_URL=https://<PROJECT_REF>.supabase.co/storage/v1/object/public/assets/legalizaljuk-ekonyv.pdf
+//   supabase secrets set EBOOK_DRIVE_URL=https://drive.google.com/file/d/XXXXXXXX/view?usp=sharing
 //
 // =========================================================
 
@@ -46,26 +50,88 @@ Deno.serve(async (req: Request) => {
     const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
     const NOTIFY_TO_EMAIL = Deno.env.get("NOTIFY_TO_EMAIL");
     const RESEND_FROM_EMAIL = Deno.env.get("RESEND_FROM_EMAIL") || "Legalizáljuk <onboarding@resend.dev>";
-    const EBOOK_PDF_URL = Deno.env.get("EBOOK_PDF_URL");
+    const EBOOK_DRIVE_URL = Deno.env.get("EBOOK_DRIVE_URL") ||
+      "https://drive.google.com/file/d/1gZ2rA_q4fLQvJK9K2M188ptDW3J8CuhT/view?usp=sharing";
 
     if (!RESEND_API_KEY) {
       throw new Error("Hiányzik a RESEND_API_KEY secret — lásd a fájl elején lévő beállítási útmutatót.");
     }
 
-    // ---------- e-könyv PDF letöltése + base64-esítése (csatolmányhoz) ----------
-    let ebookAttachment: { filename: string; content: string } | null = null;
-    if (EBOOK_PDF_URL) {
-      const pdfResp = await fetch(EBOOK_PDF_URL);
-      if (pdfResp.ok) {
-        const pdfBuf = new Uint8Array(await pdfResp.arrayBuffer());
-        let binary = "";
-        for (let i = 0; i < pdfBuf.length; i++) binary += String.fromCharCode(pdfBuf[i]);
-        ebookAttachment = {
-          filename: "legalizaljuk-ekonyv.pdf",
-          content: btoa(binary),
-        };
-      }
-    }
+    // ---------- egységes HTML e-mail aláírás ----------
+    const SIGNATURE_HTML = `<table class="main01" style="color: #000000; font-size: medium; font-family: 'Times New Roman';" border="0" width="100%" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td style="font-size: 1px;" height="5">&nbsp;</td>
+</tr>
+<tr>
+<td valign="top">
+<table style="height: 166px;" border="0" width="410" cellspacing="0" cellpadding="0" align="left">
+<tbody>
+<tr>
+<td align="left" valign="top">
+<table border="0" width="100%" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td align="center" valign="bottom" width="130">
+<p><img src="https://softcodeitpark.com/signatures/F3017-viktriakovcs218/images/Mate.png" alt="head" width="130" height="130" /></p>
+</td>
+<td style="font-size: 1px;" valign="top" width="15">&nbsp;</td>
+<td align="left" valign="middle">
+<table border="0" width="100%" cellspacing="0" cellpadding="0" align="left">
+<tbody>
+<tr>
+<td align="left" valign="bottom">
+<table border="0" width="100%" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td style="color: #000000; font-size: 13pt; font-family: 'Open Sans', Arial, Gotham, Helvetica, sans-serif;" colspan="2" align="left" valign="top"><strong>Ing. arch. M&aacute;t&eacute; Asb&oacute;th</strong></td>
+</tr>
+<tr>
+<td style="color: #000000; font-size: 9pt; font-family: 'Open Sans', Arial, Gotham, Helvetica, sans-serif;" colspan="2" align="left" valign="top">
+<p>&Eacute;p&iacute;t&eacute;szm&eacute;rn&ouml;k &amp; Telep&uuml;l&eacute;stervező&nbsp;</p>
+</td>
+</tr>
+<tr>
+<td style="font-size: 1px;" colspan="2" height="10">&nbsp;</td>
+</tr>
+<tr>
+<td width="20"><img src="https://softcodeitpark.com/signatures/F3017-viktriakovcs218/images/call.png" alt="phone" width="12" height="12" /></td>
+<td style="color: #000000; font-size: 9pt; font-family: 'Open Sans', Arial, Gotham, Helvetica, sans-serif; font-weight: normal;" align="left" valign="top"><a style="color: #b78428; font-size: 9pt;" href="tel:+421918208118"><span style="color: #000000;">+421 918 208 118</span></a></td>
+</tr>
+<tr>
+<td style="font-size: 0pt;" colspan="2" height="5">&nbsp;</td>
+</tr>
+<tr>
+<td width="20"><img src="https://softcodeitpark.com/signatures/F3017-viktriakovcs218/images/email.png" alt="email" width="12" height="12" /></td>
+<td style="color: #000000; font-size: 9pt; font-family: 'Open Sans', Arial, Gotham, Helvetica, sans-serif; font-weight: normal;" align="left" valign="top">hello@legalizaljuk.sk</td>
+</tr>
+<tr>
+<td style="font-size: 0pt;" colspan="2" height="10">&nbsp;</td>
+</tr>
+<tr>
+<td colspan="2"><a href="https://www.linkedin.com/in/asbothmate/" rel="noopener"><img src="https://softcodeitpark.com/signatures/F3017-viktriakovcs218/images/linkedin.png" alt="linkedin" width="18" height="18" /></a><span>&nbsp;</span>&nbsp;<a href="https://www.instagram.com/madspace.co.uk/" rel="noopener"><img src="https://softcodeitpark.com/signatures/F3017-viktriakovcs218/images/instagram.png" alt="instagram" width="18" height="18" /></a></td>
+</tr>
+<tr>
+<td style="font-size: 0pt;" colspan="2" height="5">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>`;
 
     const emails: any[] = [];
 
@@ -78,20 +144,21 @@ Deno.serve(async (req: Request) => {
 
       const bodyHtml = isBook
         ? `<p>Kedves Érdeklődő!</p>
-           <p>Köszönjük, hogy igényelte az ingyenes e-könyvünket az épületek legalizálásáról (Zákon č. 25/2025 Z. z.). A könyvet csatoltan küldjük.</p>
+           <p>Köszönjük, hogy igényelte az ingyenes e-könyvünket az épületek legalizálásáról (Zákon č. 25/2025 Z. z.). Az alábbi linken tudja letölteni: <a href="${EBOOK_DRIVE_URL}">Ingyenes e-könyv letöltése</a></p>
            <p>Ha bármilyen kérdése van, hívjon bátran: <a href="tel:+421918208118">0918 208 118</a>, vagy válaszoljon erre az e-mailre.</p>
-           <p>Üdvözlettel,<br>Ing. arch. Asbóth Máté<br>Legalizáljuk</p>`
+           <p>Üdvözlettel,</p>
+           ${SIGNATURE_HTML}`
         : `<p>Kedves ${lead.name || "Érdeklődő"}!</p>
            <p>Köszönjük jelentkezését! Megkaptuk az Ön által megadott adatokat (${lead.building_type || "-"}, ${lead.built_period || "-"}), és <b>24 órán belül telefonon jelentkezünk</b> a(z) ${lead.phone || "megadott"} számon.</p>
-           ${ebookAttachment ? "<p>Addig is csatoltan küldjük az ingyenes e-könyvünket.</p>" : ""}
-           <p>Üdvözlettel,<br>Ing. arch. Asbóth Máté<br>Legalizáljuk</p>`;
+           <p>Addig is, itt a linkje az ingyenes e-könyvünknek: <a href="${EBOOK_DRIVE_URL}">Ingyenes e-könyv letöltése</a></p>
+           <p>Üdvözlettel,</p>
+           ${SIGNATURE_HTML}`;
 
       emails.push({
         from: RESEND_FROM_EMAIL,
         to: [lead.email],
         subject,
         html: bodyHtml,
-        attachments: ebookAttachment ? [ebookAttachment] : undefined,
       });
     }
 
@@ -106,7 +173,7 @@ Deno.serve(async (req: Request) => {
         from: RESEND_FROM_EMAIL,
         to: [NOTIFY_TO_EMAIL],
         subject: `Új érdeklődő (${lead.type === "book" ? "e-könyv" : "konzultáció"}) — ${lead.name || lead.email || lead.phone || ""}`,
-        html: `<p>Új lead érkezett a weboldalon:</p><table>${rows}</table>`,
+        html: `<p>Új lead érkezett a weboldalon:</p><table>${rows}</table>${SIGNATURE_HTML}`,
       });
     }
 
