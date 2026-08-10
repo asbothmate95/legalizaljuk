@@ -74,6 +74,7 @@ create or replace function public.notify_lead_email()
 returns trigger
 language plpgsql
 security definer
+set search_path = ''
 as $$
 begin
   perform net.http_post(
@@ -93,3 +94,11 @@ create trigger on_lead_created
   after insert on public.leads
   for each row
   execute function public.notify_lead_email();
+
+-- a trigger-függvényt a Postgres trigger-mechanizmus hívja meg, nem
+-- RPC-n keresztül, ezért nincs szükség rá, hogy az anon/authenticated
+-- szerepkörök közvetlenül végre tudják hajtani (lásd: Supabase security
+-- advisor "anon_security_definer_function_executable" figyelmeztetés)
+revoke execute on function public.notify_lead_email() from public;
+revoke execute on function public.notify_lead_email() from anon;
+revoke execute on function public.notify_lead_email() from authenticated;

@@ -126,7 +126,7 @@ with sync_playwright() as p:
     cpage.close()
 
     # ---------- Nav check on all other pages ----------
-    for pg in ["koszonjuk.html", "koszonjuk-konzultacio.html", "adatkezelesi-tajekoztato.html", "impresszum.html"]:
+    for pg in ["koszonjuk.html", "koszonjuk-konzultacio.html", "adatkezelesi-tajekoztato.html", "aszf.html"]:
         p2 = browser.new_page()
         p2.goto(f"{BASE}/{pg}", wait_until="networkidle")
         hrefs = [a.get_attribute("href") for a in p2.locator(".site-nav a").all()]

@@ -92,9 +92,9 @@ with sync_playwright() as p:
         errors.append(f"Book form submit did not redirect to koszonjuk.html: {bpage.url}")
     bpage.close()
 
-    # ================= 5) Cross-page: sticky bar book button on impresszum.html opens modal on index.html =================
+    # ================= 5) Cross-page: sticky bar book button on aszf.html opens modal on index.html =================
     cpage = browser.new_page(viewport={"width": 390, "height": 844})
-    cpage.goto(f"{BASE}/impresszum.html", wait_until="networkidle")
+    cpage.goto(f"{BASE}/aszf.html", wait_until="networkidle")
     cpage.locator('.mobile-sticky-cta a:has-text("Ingyenes könyv")').click()
     cpage.wait_for_load_state("networkidle")
     cpage.wait_for_timeout(400)

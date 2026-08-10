@@ -221,7 +221,7 @@
       if (e.target === bookModalOverlay) closeBookModal();
     });
 
-    // más oldalról érkezve (pl. impresszum.html -> index.html#form)
+    // más oldalról érkezve (pl. aszf.html -> index.html#form)
     // automatikusan nyíljon meg az ablak, majd tisztuljon a URL
     if (window.location.hash === "#form") {
       openBookModal();
